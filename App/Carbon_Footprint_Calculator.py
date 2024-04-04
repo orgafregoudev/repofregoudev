@@ -179,6 +179,20 @@ def create_layer(med_lat, med_lon, df_map, dist_amiens_ville, timestamps):
     
     return r
 
+@st.cache_data(show_spinner=False)
+def get_city_coordinates(city_country):
+    """
+    Return the latitude and longitude of a city
+
+    Parameters
+    city_country (str): city and country separated by a comma
+    """
+    g = geocoder.osm(city_country)
+    lat = g.json['lat']
+    lon = g.json['lng']
+    return lat, lon
+
+
 # #######################################################################################################################
 #                                              # === CONSTANTS === #
 # #######################################################################################################################
@@ -306,20 +320,12 @@ if xls:
             # 0 - Process city location
   
             try:
-                txt = ville+', '+pays
-
-                g = None
-                g = geocoder.osm(txt)
-                lat = g.json['lat']
-                lon = g.json['lng']
+                city_country = (ville+', '+pays).lower().strip()
+                lat, lon = get_city_coordinates(city_country)
             except TypeError:
                 try:
-                    txt = ville2+', '+pays2
-    
-                    g = None
-                    g = geocoder.osm(txt)
-                    lat = g.json['lat']
-                    lon = g.json['lng']
+                    city_country = (ville2+', '+pays2).lower().strip()
+                    lat, lon = get_city_coordinates(city_country)
                 except TypeError:
                     st.error('Ville ou Pays non reconnu')
                     st.stop()
