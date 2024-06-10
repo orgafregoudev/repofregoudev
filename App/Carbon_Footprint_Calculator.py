@@ -294,17 +294,17 @@ if xls:
     
         col1, col2, col3 = st.columns(3)
         with col1:
-            pays = st.text_input("Quel pays pour l'export", value="Allemagne")
+            pays = st.text_input("Quel pays pour l'export", value="", placeholder="Allemagne")
             pays2 = pays
         with col2:
-            ville = st.text_input("Quelle ville pour l'export", value="Berlin")
+            ville = st.text_input("Quelle ville pour l'export", value="", placeholder="Berlin")
             ville2 = ville
         with col3:
             transport = st.radio('Export type', ['Avion', 'Camion', 'Bateau'])
-       
+ 
+        valider = st.button("Valider")
             
-            
-        if pays and transport:
+        if valider and pays and transport:
             translated = GoogleTranslator(source='auto', target='en').translate(pays).title()
             continent = get_continent(translated)
             if (continent in ['OC', 'NA', 'SA', 'Unknown'] and transport == "Camion") or (pays in ['Japon', 'Singapour', 'Indonésie', 'Islande'] and transport == 'Camion'):
@@ -315,7 +315,7 @@ if xls:
 # #######################################################################################################################
 #                                              # === CALCULATE  === #
 # #######################################################################################################################
-        if transport and ville and pays:
+        if valider and transport and ville and pays:
 
             # 0 - Process city location
   
