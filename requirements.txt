@@ -6,3 +6,4 @@ geopy==2.2.0
 deep-translator==1.5.4
 pycountry-convert==0.7.2
 googlemaps==4.5.3
+boto3==1.34.122

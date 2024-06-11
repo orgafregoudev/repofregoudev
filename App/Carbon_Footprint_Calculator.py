@@ -27,7 +27,14 @@ import pydeck as pdk
 import googlemaps
 from datetime import datetime
 import requests
+import boto3
 
+aws_session = boto3.Session(
+    aws_access_key_id=st.secrets["aws_access_key_id"],
+    aws_secret_access_key=st.secrets["aws_secret_access_key"],
+    region_name="eu-central-1"
+)
+aws_client = aws_session.client('location')
 
 # #######################################################################################################################
 #                                              # === FUNCTIONS === #
@@ -187,9 +194,15 @@ def get_city_coordinates(city_country):
     Parameters
     city_country (str): city and country separated by a comma
     """
-    g = geocoder.osm(city_country)
-    lat = g.json['lat']
-    lon = g.json['lng']
+    response = aws_client.search_place_index_for_text(
+        IndexName="geocoding-clients",
+        Text=city_country
+    )
+    results = response["Results"]
+    if len(results) == 0:
+        raise TypeError
+    
+    lon, lat = results[0]["Place"]["Geometry"]["Point"]
     return lat, lon
 
 
